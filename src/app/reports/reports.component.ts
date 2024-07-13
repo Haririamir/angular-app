@@ -21,9 +21,10 @@ const TREE_DATA: VehicleNode[] = [
     id: 5,
     children: [
       { name: 'Test Child 2', id: 1 },
-      { name: 'Test Child 3', id: 2, children: [{name:"asdadasd"}] },
+      { name: 'Test Child 3', id: 2, children: [{ name: 'asdadasd' }] },
     ],
   },
+  { name: 'test2', id: 2, children: [{ name: 'Child 4', id: 1 }] },
 ];
 
 @Component({
@@ -32,7 +33,7 @@ const TREE_DATA: VehicleNode[] = [
   styleUrls: ['./reports.component.css'],
 })
 export class ReportsComponent {
-  result: string[] = [];
+  result: any[] = [];
 
   public treeControl = new NestedTreeControl<VehicleNode>(
     (node) => node.children
@@ -47,8 +48,7 @@ export class ReportsComponent {
     });
   }
 
-  public hasChild = (_: number, node: VehicleNode) =>
-    !!node.children && node.children.length > 0;
+  hasChild = (_: number, _nodeData: VehicleNode) => _nodeData.children;
 
   private setParent(node: VehicleNode, parent?: VehicleNode) {
     node.parent = parent;
@@ -79,15 +79,24 @@ export class ReportsComponent {
   }
 
   public submit() {
+    // this.result = this.dataSource.data.reduce(
+    //   (acc: string[], node: VehicleNode) =>
+    //     acc.concat(
+    //       this.treeControl
+    //         .getDescendants(node)
+    //         .filter((descendant) => descendant.selected)
+    //         .map((descendant) => descendant.name)
+    //     ),
+    //   [] as string[]
+    // );
     this.result = this.dataSource.data.reduce(
-      (acc: string[], node: VehicleNode) =>
+      (acc: any[], node: VehicleNode) =>
         acc.concat(
           this.treeControl
             .getDescendants(node)
-            .filter((descendant) => descendant.selected)
-            .map((descendant) => descendant.name)
+            .filter((descendant) => !descendant.children && descendant.selected)
         ),
-      [] as string[]
+      [] as any
     );
   }
 }
